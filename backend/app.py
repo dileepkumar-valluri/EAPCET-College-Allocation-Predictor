@@ -1,6 +1,7 @@
 import os
 import re
 import secrets
+from flask_cors import CORS
 from pymysql.err import IntegrityError, MySQLError
 from werkzeug.security import (
     generate_password_hash,
@@ -18,6 +19,19 @@ from backend.phase_predictor import (
 from backend.ai_assistant import ai_assistant_bp
 
 app = Flask(__name__)
+
+allowed_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://eapcet-college-allocation-predictor.onrender.com",
+]
+
+CORS(
+    app,
+    origins=allowed_origins,
+    supports_credentials=True,
+)
+
 app.register_blueprint(ai_assistant_bp)
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
 
@@ -26,8 +40,13 @@ if not app.secret_key:
         "FLASK_SECRET_KEY is missing. Check your .env file."
     )
 
+is_production = os.getenv("RENDER") == "true"
+
 app.config["SESSION_COOKIE_HTTPONLY"] = True
-app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+app.config["SESSION_COOKIE_SAMESITE"] = (
+    "None" if is_production else "Lax"
+)
+app.config["SESSION_COOKIE_SECURE"] = is_production
 
 # A guest gets one successful prediction across all prediction modes.
 GUEST_COOKIE_NAME = "eapcet_guest_id"
