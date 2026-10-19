@@ -1,10 +1,10 @@
 
 import { useEffect, useState } from 'react'
-import Prediction from './Prediction.jsx'
-import PredictionHistory from './PredictionHistory.jsx'
-import Auth from './Auth.jsx'
-import MyProfile from './MyProfile.jsx'
-import AIAssistant from './AIAssistant.jsx'
+import Prediction from '../src/Prediction.jsx'
+import PredictionHistory from '../src/PredictionHistory.jsx'
+import Auth from '../src/Auth.jsx'
+import MyProfile from '../src/MyProfile.jsx'
+import AIAssistant from '../src/AIAssistant.jsx'
 import { motion } from 'motion/react'
 import {
   ArrowDownRight,
