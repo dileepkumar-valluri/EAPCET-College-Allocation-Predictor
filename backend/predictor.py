@@ -19,7 +19,7 @@ CATEGORY_COLUMNS = {
 }
 
 VALID_STATES = {"AP", "TG"}
-VALID_AP_LOCAL_AREAS = {'ALL', "AU", "SVU"}
+VALID_AP_LOCAL_AREAS = {"ALL", "AU", "SVU"}
 
 RESULT_COLUMNS = [
     "state",
@@ -46,15 +46,16 @@ def predict_colleges(
     local_area: str | None = None,
 ) -> pd.DataFrame:
     """
-    Return up to five historical cutoff records with cutoff >= student rank.
+    Return up to five unique colleges whose historical cutoff
+    is greater than or equal to the student's rank.
 
-    AP predictions require an AU or SVU local-area selection.
-    TG local-area filtering is unavailable in the current dataset.
+    Only records matching the student's rank are recommended.
+    The nearest eligible historical cutoff record is retained
+    for each college.
 
-    Results are historical comparisons, not guaranteed allotments.
+    Historical comparisons do not guarantee seat allotment.
     """
 
-    # Normalize inputs.
     state = str(state).strip().upper()
     category = str(category).strip().upper()
     gender = str(gender).strip().lower()
@@ -63,7 +64,6 @@ def predict_colleges(
     if local_area is not None:
         local_area = str(local_area).strip().upper()
 
-    # Validate inputs.
     if state not in VALID_STATES:
         raise ValueError("State must be AP or TG.")
 
@@ -73,63 +73,57 @@ def predict_colleges(
     if gender not in {"boys", "girls"}:
         raise ValueError("Gender must be boys or girls.")
 
-    if (
-        not isinstance(rank, int)
-        or isinstance(rank, bool)
-        or rank <= 0
-    ):
+    if not isinstance(rank, int) or isinstance(rank, bool) or rank <= 0:
         raise ValueError("Rank must be a positive integer.")
 
-    if (
-        not isinstance(limit, int)
-        or isinstance(limit, bool)
-        or limit <= 0
-    ):
+    if not isinstance(limit, int) or isinstance(limit, bool) or limit <= 0:
         raise ValueError("Limit must be a positive integer.")
 
     if not preferred_branch:
         raise ValueError("Preferred branch cannot be empty.")
 
-    # Require local-area selection for AP.
     if state == "AP":
         if local_area not in VALID_AP_LOCAL_AREAS:
             raise ValueError(
-                "For AP predictions, select Entire AP, AU, or SVU."
+                "For AP predictions, select ALL, AU, or SVU."
             )
-
-    # Do not claim TG local-area filtering is supported.
     elif local_area is not None:
         raise ValueError(
             "TG local-area filtering is unavailable in the current dataset."
         )
 
-    # Select the category/gender cutoff column.
     cutoff_column = f"{CATEGORY_COLUMNS[category]}_{gender}"
-
-    # Load standardized data.
     data = load_standardized_data()
 
-    if cutoff_column not in data.columns:
+    required_columns = {
+        "state",
+        "college_code",
+        "college_name",
+        "district",
+        "branch_code",
+        "branch_name",
+        "local_area",
+        "phase",
+        cutoff_column,
+    }
+
+    missing_columns = required_columns.difference(data.columns)
+
+    if missing_columns:
         raise ValueError(
-            f"Required cutoff column '{cutoff_column}' is missing."
+            "Required dataset columns are missing: "
+            + ", ".join(sorted(missing_columns))
         )
 
-    # Normalize filter fields.
-    state_values = (
-        data["state"]
-        .fillna("")
-        .astype(str)
-        .str.strip()
-        .str.upper()
-    )
-
-    branch_codes = (
-        data["branch_code"]
-        .fillna("")
-        .astype(str)
-        .str.strip()
-        .str.upper()
-    )
+    # Normalize fields used for filtering.
+    for column in ["state", "college_code", "branch_code"]:
+        data[column] = (
+            data[column]
+            .fillna("")
+            .astype(str)
+            .str.strip()
+            .str.upper()
+        )
 
     branch_names = (
         data["branch_name"]
@@ -139,49 +133,35 @@ def predict_colleges(
         .str.upper()
     )
 
-    # Filter by state and preferred branch.
     filtered = data[
-        (state_values == state)
+        (data["state"] == state)
         & (
-            branch_codes.eq(preferred_branch)
+            data["branch_code"].eq(preferred_branch)
             | branch_names.eq(preferred_branch)
         )
     ].copy()
 
-    if filtered.empty:
-        return pd.DataFrame(columns=RESULT_COLUMNS)
-
-    # Apply AP local-area filter.
-    # ALL means search every AP record without AU/SVU filtering.
     if state == "AP" and local_area != "ALL":
-        local_area_values = (
+        areas = (
             filtered["local_area"]
             .fillna("")
             .astype(str)
             .str.strip()
             .str.upper()
         )
-
-        filtered = filtered[
-            local_area_values == local_area
-        ].copy()
+        filtered = filtered[areas == local_area].copy()
 
     if filtered.empty:
         return pd.DataFrame(columns=RESULT_COLUMNS)
 
-    # Convert selected historical cutoff to numeric.
+    # Convert cutoffs and exclude missing values.
     filtered["cutoff_rank"] = pd.to_numeric(
         filtered[cutoff_column],
         errors="coerce",
     )
-
-    # Exclude records without a valid cutoff.
     filtered = filtered.dropna(subset=["cutoff_rank"]).copy()
 
-    if filtered.empty:
-        return pd.DataFrame(columns=RESULT_COLUMNS)
-
-    # Only cutoffs equal to or greater than the student's rank.
+    # Critical rule: exclude all historical cutoffs below the student's rank.
     filtered = filtered[
         filtered["cutoff_rank"] >= rank
     ].copy()
@@ -189,23 +169,22 @@ def predict_colleges(
     if filtered.empty:
         return pd.DataFrame(columns=RESULT_COLUMNS)
 
-    # Calculate distance from the student's rank.
     filtered["rank_difference"] = (
         filtered["cutoff_rank"] - rank
     )
+    filtered["prediction_status"] = "Within historical cutoff"
 
-    filtered["prediction_status"] = "Historical cutoff match"
-
-    # Sort by nearest eligible cutoff.
-    # Preserve different counselling phases and source records.
+    # Nearest eligible cutoff first.
     filtered = filtered.sort_values(
-        by=[
-            "rank_difference",
-            "college_name",
-            "college_code",
-        ],
+        by=["rank_difference", "college_name", "college_code"],
         ascending=[True, True, True],
         kind="stable",
+    )
+
+    # Return one recommendation per college.
+    filtered = filtered.drop_duplicates(
+        subset=["college_code"],
+        keep="first",
     )
 
     return (
@@ -216,36 +195,16 @@ def predict_colleges(
 
 
 if __name__ == "__main__":
-    # AP test: select a local area.
-    ap_results = predict_colleges(
-        state="AP",
-        rank=80000,
-        category="OC",
-        gender="boys",
-        preferred_branch="CSE",
-        limit=5,
-        local_area="AU",
-    )
-
-    print("\nAP prediction results (AU):")
-    if ap_results.empty:
-        print("No eligible historical cutoff records found.")
-    else:
-        print(ap_results.to_string(index=False))
-
-    # TG test: no local-area filter is applied.
-    tg_results = predict_colleges(
+    results = predict_colleges(
         state="TG",
         rank=80000,
         category="OC",
         gender="boys",
         preferred_branch="CSE",
         limit=5,
-        local_area=None,
     )
 
-    print("\nTG prediction results:")
-    if tg_results.empty:
-        print("No eligible historical cutoff records found.")
+    if results.empty:
+        print("No matching historical cutoff records found.")
     else:
-        print(tg_results.to_string(index=False))
+        print(results.to_string(index=False))

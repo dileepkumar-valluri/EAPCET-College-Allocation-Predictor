@@ -1,2 +1,10 @@
 .venv/
 backend/__pycache__/
+
+.venv/
+backend/__pycache__/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
