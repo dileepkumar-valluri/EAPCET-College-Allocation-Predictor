@@ -1,4 +1,4 @@
-
+import API_BASE from "./api";
 import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import {
@@ -24,7 +24,7 @@ function MyProfile({ onBack, onLogout }) {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await fetch('/api/profile', {
+        const response = await fetch(`${API_BASE}/profile`, {
           credentials: 'include',
         })
 

@@ -1,3 +1,4 @@
+import API_BASE from "./api";
 import { useEffect, useState } from 'react'
 import Prediction from './Prediction.jsx'
 import PredictionHistory from './PredictionHistory.jsx'
@@ -82,7 +83,7 @@ function App() {
 useEffect(() => {
   const restoreSession = async () => {
     try {
-      const response = await fetch('/api/profile', {
+      const response = await fetch(`${API_BASE}/profile`, {
         credentials: 'include',
       })
 
@@ -139,7 +140,7 @@ useEffect(() => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('/api/logout', {
+      const response = await fetch(`${API_BASE}/logout`, {
         method: 'POST',
         credentials: 'include',
       })

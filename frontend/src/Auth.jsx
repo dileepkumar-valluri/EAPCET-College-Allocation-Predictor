@@ -1,4 +1,4 @@
-
+import API_BASE from "./api";
 import { useState } from "react";
 import { motion } from "motion/react";
 import {
@@ -16,7 +16,6 @@ import {
   UserRound,
 } from "lucide-react";
 
-const API_BASE = "/api";
 
 export default function Auth({ onBack, onLoginSuccess }) {
   const [mode, setMode] = useState("login");

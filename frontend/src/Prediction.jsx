@@ -1,4 +1,4 @@
-
+import API_BASE from "./api";
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -25,7 +25,6 @@ import {
   BookmarkCheck,
 } from "lucide-react";
 
-const API_BASE = "/api";
 
 const categories = [
   { value: "OC", label: "OC" },
