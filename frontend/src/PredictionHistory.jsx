@@ -1,4 +1,4 @@
-
+import API_BASE from "./api";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -13,8 +13,6 @@ import {
   Hash,
   Sparkles,
 } from "lucide-react";
-
-const API_BASE = "/api";
 
 function formatRank(value) {
   const rank = Number(value);

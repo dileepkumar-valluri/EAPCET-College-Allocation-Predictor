@@ -1,4 +1,4 @@
-
+import API_BASE from "./api";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
@@ -58,7 +58,7 @@ function AIAssistant() {
     try {
       const requestStart = performance.now();
 
-      const response = await fetch("/api/ai-assistant", {
+      const response = await fetch(`${API_BASE}/ai-assistant`, {        
         method: "POST",
         headers: {
           "Content-Type": "application/json",
