@@ -1,83 +1,221 @@
+
 # EAPCET College Allocation Predictor & Student Guidance System
 
-## 1. Project Overview
+A web-based platform that helps AP EAPCET and TG EAPCET aspirants explore suitable engineering colleges and branches using their entrance exam rank, category, preferred branch, and historical counselling cutoff data.
 
-The EAPCET College Allocation Predictor & Student Guidance System is a web-based application designed to help Intermediate students who have appeared for AP EAPCET or TG EAPCET understand their potential engineering college and branch allocation options.
+## Project Overview
 
-The system analyzes students' ranks and relevant counselling data to provide college recommendations, historical cutoff comparisons, and student guidance.
+The EAPCET College Allocation Predictor & Student Guidance System provides college recommendations, college-specific cutoff analysis, counselling-phase comparisons, and AI-powered student guidance. It uses historical counselling data to help students make more informed choices during engineering admissions.
 
-## 2. Project Objectives
+**Important:** Predictions are estimates based on available historical data. They do not guarantee actual seat allotment.
 
-- Simplify the college selection process for EAPCET students.
-- Analyze historical college cutoff and counselling-phase data.
-- Recommend five relevant engineering colleges based on student inputs.
-- Provide college-specific, phase-wise cutoff analysis.
-- Help students understand their predicted results through an AI-powered text assistant.
-- Support future updates when newer counselling datasets become available.
+## Key Features
 
-## 3. Key Features
+### 1. Student Registration and Login
+- Student registration and login.
+- Session-based authentication.
+- Student profile and account information.
+- Prediction history support, subject to backend and database configuration.
 
-### 3.1 Student Registration and Login
-- Student registration using full name, email address, mobile number, password, and location.
-- Secure login and access to the application's features.
+### 2. College Allocation Prediction
+- Accepts entrance exam rank, state, category, and preferred engineering branch.
+- Analyzes available historical counselling data.
+- Recommends suitable engineering colleges.
+- Presents relevant cutoff information and estimated allocation outcomes.
 
-### 3.2 College Allocation Prediction
-- Accept the student's EAPCET rank, state, category, and preferred engineering branch.
-- Analyze relevant historical counselling data.
-- Recommend five suitable colleges.
-- Display college name, complete address, relevant cutoff rank, and estimated seat-allocation position.
+### 3. College-Specific Analysis
+- Analyze selected colleges and engineering branches.
+- Compare student ranks with historical cutoff ranks.
+- Support counselling-phase comparisons where data is available.
 
-### 3.3 College-Specific Analysis
-- Allow students to select a state, college, and engineering branch.
-- Compare the student's rank with the available historical cutoff data.
-- Present estimated seat-allocation positions separately for available counselling phases.
+### 4. AI-Powered Student Guidance
+- AI assistant for EAPCET-related questions.
+- General guidance about colleges, branches, cutoffs, and counselling.
+- Explanations to help students understand their options.
 
-### 3.4 AI-Powered Student Guidance
-- Answer questions about EAPCET examinations, colleges, branches, cutoff ranks, and counselling procedures.
-- Explain prediction results and provide general engineering admission guidance.
-- Consider voice-based interaction as a possible future enhancement.
+### 5. Historical Counselling Data
+- Supports AP EAPCET and TG EAPCET data where datasets are available.
+- Processes college, branch, category, rank, and counselling-phase information.
+- Designed to accommodate future dataset updates.
 
-### 3.5 Historical Data Management
-- Initially use 2025 AP EAPCET and TG EAPCET data.
-- Organize college, branch, category, rank, seat, and counselling-phase information.
-- Design the system to support future dataset updates, including 2026 counselling data when available.
+## Technology Stack
 
-## 4. Planned Technology Stack
+| Component | Technologies |
+|---|---|
+| Frontend | React.js, Vite, Tailwind CSS |
+| Backend | Python, Flask |
+| Database | MySQL |
+| Data Processing | Pandas, NumPy |
+| AI Integration | AI assistant integration |
+| Frontend Animations | Motion |
+| Icons | Lucide React |
+| Version Control | Git, GitHub |
+| Deployment | Render |
+| Development Environment | Visual Studio Code |
 
-- **Programming Language:** Python
-- **Backend Framework:** Flask
-- **Data Processing:** Pandas and NumPy
-- **Database:** MySQL
-- **Frontend:** To be finalized during development
-- **AI Integration:** To be selected during development
-- **Development Environment:** Visual Studio Code
-- **Version Control:** Git and GitHub (planned)
+## Project Architecture
 
-## 5. Project Scope
+```text
+EAPCET_College_Predictor/
+├── backend/
+│   ├── app.py
+│   ├── ai_assistant.py
+│   ├── college_analysis.py
+│   ├── config.py
+│   ├── data_loader.py
+│   ├── phase_predictor.py
+│   └── ...
+├── data/
+│   └── Historical counselling datasets
+├── docs/
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── AIAssistant.jsx
+│   │   ├── App.jsx
+│   │   ├── Auth.jsx
+│   │   ├── MyProfile.jsx
+│   │   ├── Prediction.jsx
+│   │   ├── PredictionHistory.jsx
+│   │   ├── App.css
+│   │   ├── index.css
+│   │   └── main.jsx
+│   ├── package.json
+│   └── vite.config.js
+├── tests/
+├── requirements.txt
+├── eapcet_db_backup.sql
+└── README.md
+```
 
-The initial scope includes historical counselling data analysis for AP EAPCET and TG EAPCET, student-specific college recommendations, college-wise phase analysis, and AI-powered text guidance.
+*Note: This is a high-level overview. Some folders and files are omitted for brevity.*
 
-The accuracy and coverage of the recommendations will depend on the completeness and reliability of the collected datasets.
+## Live Deployment
 
-## 6. Project Status
+- **Frontend:** https://eapcet-college-allocation-predictor.onrender.com/
+- **Backend API:** https://eapcet-college-allocation-predictor-dwec.onrender.com/
 
-**Current Stage:** Initial project setup and planning.
+The frontend and backend are deployed separately. Authentication, profile requests, predictions, and other API-dependent features require the frontend API configuration and backend database connection to be working correctly.
 
-Planned development stages:
+## Local Setup and Installation
 
-1. Project setup and requirements definition.
-2. Data collection and validation.
-3. Data cleaning and analysis.
-4. Prediction logic development.
-5. Database and Flask backend development.
-6. Frontend development.
-7. AI assistant integration.
-8. Testing, documentation, and deployment.
+### Prerequisites
 
-## 7. Important Disclaimer
+- Python 3.10 or a compatible Python version.
+- Node.js and npm.
+- MySQL Server or a compatible hosted MySQL database.
+- Git.
 
-The system provides estimates based on available historical counselling data. Recommendations are intended for student guidance only and do not guarantee actual seat allotment. Final allotments depend on the official counselling rules, eligibility requirements, seat availability, preferences, and applicable reservation criteria.
+### 1. Clone the Repository
 
-## 8. Project Goal
+```bash
+git clone https://github.com/dileepkumar-valluri/EAPCET-College-Allocation-Predictor.git
+cd EAPCET-College-Allocation-Predictor
+```
 
-To build an accessible, data-driven student guidance platform that helps EAPCET aspirants compare engineering college options and make more informed college and branch preferences.
+### 2. Set Up the Python Backend
+
+Create and activate a virtual environment.
+
+**Windows PowerShell:**
+
+```powershell
+py -3.10 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+Install the dependencies:
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Configure the backend environment variables before starting the server.
+
+### 3. Configure Environment Variables
+
+Set the following variables in your local environment or an appropriate `.env` file, according to the application's configuration.
+
+```env
+FLASK_SECRET_KEY=your_secure_random_secret
+DB_HOST=your_mysql_host
+DB_PORT=3306
+DB_USER=your_mysql_username
+DB_PASSWORD=your_mysql_password
+DB_NAME=eapcet_db
+```
+
+Use the actual database host, port, username, password, and database name. Do not commit passwords, secret keys, or other credentials to GitHub.
+
+### 4. Prepare the Database
+
+Create or import the required database schema and data using the project's SQL backup or schema scripts. Confirm that the table names and columns match the backend code before running the application.
+
+### 5. Start the Backend
+
+From the project root, with the virtual environment activated:
+
+```bash
+python -m backend.app
+```
+
+The Flask development server should start on the configured local port, typically `5000`.
+
+### 6. Start the Frontend
+
+Open a second terminal:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+Open the local URL displayed by Vite, typically:
+
+```text
+http://localhost:5173
+```
+
+Ensure the frontend API base URL, Flask CORS settings, and session cookie configuration are appropriate for local development.
+
+## Deployment
+
+The project uses Render for deployment.
+
+- The frontend is deployed as a static site.
+- The backend is deployed as a Python web service.
+- The backend requires correctly configured environment variables and an accessible MySQL database.
+- The frontend must send API requests to the deployed backend URL in production.
+- CORS and cookie settings must support the deployed frontend and backend origins.
+
+After each code change, test the application locally, commit and push the verified changes to GitHub, and check the corresponding Render deployment logs.
+
+## Team Contributions
+
+The project can be divided into four responsibilities:
+
+1. **Frontend Development:** React components, UI, forms, navigation, and API integration.
+2. **Backend Development:** Flask routes, request handling, authentication, and API logic.
+3. **Data Processing and Prediction:** Historical dataset validation, preprocessing, cutoff analysis, and prediction logic.
+4. **AI Guidance, Testing, and Deployment:** AI assistant integration, testing, documentation, and deployment verification.
+
+Update this section with the actual names and contributions of the team members.
+
+## Project Scope and Limitations
+
+The system provides guidance using the historical datasets available to it. Prediction quality depends on dataset completeness, correctness, counselling rules, category, branch, seat availability, and other admission factors.
+
+Features that depend on an unavailable dataset, an unconfigured API, or an inaccessible database may not work until the relevant dependency is configured.
+
+## Disclaimer
+
+This application is intended for educational guidance only. It does not represent an official counselling authority and cannot guarantee college admission or seat allotment. Final allotments depend on official counselling procedures, eligibility, seat availability, candidate preferences, reservation rules, and the applicable admission guidelines.
+
+## Future Enhancements
+
+- Incorporate newer AP and TG EAPCET counselling datasets.
+- Improve prediction logic and historical cutoff analysis.
+- Expand personalized college and branch guidance.
+- Improve API reliability, authentication, and error handling.
+- Add additional student guidance features as the project evolves.
